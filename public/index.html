@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="w-full max-w-2xl mx-auto flex flex-col justify-center h-screen" x-data="{
+        showDynamic: false,
+        map: null,
+        accessToken: 'pk.eyJ1Ijoib2xpdmVyc2VydmluMiIsImEiOiJjbW1jY3c4cjYwNTBuMndwbjk4cDRjd3diIn0.Bt_iWtk6NfO9yJM2ChJRIQ',
+        centerLng: -80.142715,
+        centerLat: 25.951435,
+        markerLng: -122.0878,
+        markerLat: 37.7504
+    }">
+        <div class="rounded shadow-sm overflow-hidden border-zinc-100 border">
+            <button
+                x-show="!showDynamic"
+                class="border-0 p-0 bg-transparent block"
+                @click="
+                    showDynamic = true;
+                    $nextTick(() => {
+                        mapboxgl.accessToken = accessToken;
+                        map = new mapboxgl.Map({ container: 'map', style: 'mapbox://styles/mapbox/streets-v12', center: [centerLng, centerLat], zoom: 11 });
+                        map.addControl(new mapboxgl.NavigationControl());
+                        new mapboxgl.Marker({ color: '#4682b4' }).setLngLat([markerLng, markerLat]).addTo(map);
+                        setTimeout(() => map.resize(), 0);
+                    });
+                ">
+                <img
+                    class="w-full"
+                    :src="`https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+4682b4(${markerLng},${markerLat})/${centerLng},${centerLat},11,0/600x400@2x?attribution=true&logo=true&access_token=${accessToken}`"
+                >
+            </button>
+
+            <div id="map" x-show="showDynamic" class="w-full h-[400px]"></div>
+        </div>
+    </div>
+</body>
+</html>
